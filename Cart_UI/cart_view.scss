@@ -129,8 +129,8 @@
               transition: background 0.2s, color 0.2s;
               
               &:hover {
-                background: #004499; // Changed hover background to #004499
-                color: white; // Changed text color to white for contrast
+                background: #004499;
+                color: white;
               }
               
               &:disabled {
@@ -254,7 +254,7 @@
           font-size: 15px;
           padding: 0;
           cursor: pointer;
-          text-decoration: underline;
+          text-decoration: none; // Removed underline
           
           &:hover {
             color: #004499;
