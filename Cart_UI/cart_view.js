@@ -17,6 +17,28 @@ const CartView = () => {
     }
   ]);
 
+  const [isAddressFormOpen, setIsAddressFormOpen] = useState(false); // State for dropdown
+  const [address, setAddress] = useState({
+    country: "Philippines",
+    state: "Agusan Del Norte",
+    city: "Butuan City",
+    zip: "8600"
+  });
+
+  // Define states for each country
+  const statesByCountry = {
+    Philippines: [
+      "Agusan Del Norte",
+      "Cebu",
+      "Davao del Sur"
+    ],
+    US: [
+      "California",
+      "Texas",
+      "New York"
+    ]
+  };
+
   const navigate = useNavigate();
 
   // Remove item from cart
@@ -43,6 +65,31 @@ const CartView = () => {
 
   const handleContinueShopping = () => {
     navigate('/products');
+  };
+
+  // Toggle address form dropdown
+  const toggleAddressForm = () => {
+    setIsAddressFormOpen(!isAddressFormOpen);
+  };
+
+  // Handle address form changes
+  const handleAddressChange = (e) => {
+    const { name, value } = e.target;
+    setAddress(prev => {
+      const updatedAddress = { ...prev, [name]: value };
+      // Reset state if country changes
+      if (name === "country") {
+        updatedAddress.state = statesByCountry[value][0]; // Set to first state of the selected country
+      }
+      return updatedAddress;
+    });
+  };
+
+  // Handle form submission (you can add logic to save the address)
+  const handleAddressSubmit = (e) => {
+    e.preventDefault();
+    // Add logic to save the updated address (e.g., API call)
+    setIsAddressFormOpen(false); // Close the form after submission
   };
 
   return (
@@ -119,9 +166,74 @@ const CartView = () => {
                   <div className="shipping-title">Shipping to:</div>
                   <div className="shipping-address">
                     Purok 6 960-B RCES, Baan riverside. (Bgy. 19)<br />
-                    Butuan City, Mindanao, Agusan Del Norte 8600
+                    {address.city}, {address.country === "Philippines" ? "Mindanao" : ""}, {address.state} {address.zip}
                   </div>
-                  <button className="change-address-btn">Change address</button>
+                  <button className="change-address-btn" onClick={toggleAddressForm}>
+                    Change address
+                  </button>
+
+                  {/* Address Form Dropdown */}
+                  <div className={`address-form-container ${isAddressFormOpen ? 'open' : 'closed'}`}>
+                    <form className="address-form" onSubmit={handleAddressSubmit}>
+                      <div className="form-group">
+                        <label htmlFor="country">Country / Region</label>
+                        <select
+                          id="country"
+                          name="country"
+                          value={address.country}
+                          onChange={handleAddressChange}
+                        >
+                          <option value="Philippines">Philippines</option>
+                          <option value="US">United States</option>
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="state">State / County</label>
+                        <select
+                          id="state"
+                          name="state"
+                          value={address.state}
+                          onChange={handleAddressChange}
+                        >
+                          {statesByCountry[address.country].map(state => (
+                            <option key={state} value={state}>{state}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="city">Town / City</label>
+                        <input
+                          type="text"
+                          id="city"
+                          name="city"
+                          value={address.city}
+                          onChange={handleAddressChange}
+                          placeholder="Enter your city"
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="zip">Postcode / ZIP code</label>
+                        <input
+                          type="text"
+                          id="zip"
+                          name="zip"
+                          value={address.zip}
+                          onChange={handleAddressChange}
+                          placeholder="Enter your ZIP code"
+                        />
+                      </div>
+                      <div className="form-actions">
+                        <button type="submit" className="save-address-btn">Save</button>
+                        <button
+                          type="button"
+                          className="cancel-address-btn"
+                          onClick={toggleAddressForm}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
+                  </div>
                 </div>
                 
                 <div className="totals-row grand-total">
