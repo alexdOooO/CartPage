@@ -92,6 +92,21 @@ const CartView = () => {
     setIsAddressFormOpen(false); // Close the form after submission
   };
 
+  // Handle Proceed to Checkout
+  const handleProceedToCheckout = () => {
+    if (cartItems.length === 0) {
+      alert("Your cart is empty. Please add items to proceed to checkout.");
+      return;
+    }
+    navigate('/payment', {
+      state: {
+        cartItems,
+        subtotal,
+        address
+      }
+    });
+  };
+
   return (
     <div className="cart-view">
       <Header />
@@ -241,7 +256,9 @@ const CartView = () => {
                   <span className="totals-value">₱{subtotal.toLocaleString()}</span>
                 </div>
                 
-                <button className="checkout-button">Proceed to checkout</button>
+                <button className="checkout-button" onClick={handleProceedToCheckout}>
+                  Proceed to checkout
+                </button>
               </div>
             </div>
           </div>
